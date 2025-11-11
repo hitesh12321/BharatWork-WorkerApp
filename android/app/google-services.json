@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977197347789",
+    "project_id": "bharatwork-2e997",
+    "storage_bucket": "bharatwork-2e997.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977197347789:android:8545d555eb8c43141f8a84",
+        "android_client_info": {
+          "package_name": "com.example.bharatwork"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm7GoC8oUtI1McYI7UI0sti9cctc5t9-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

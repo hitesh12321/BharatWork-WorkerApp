@@ -2,6 +2,7 @@ import 'package:bharatwork/core/constants/app_colors.dart';
 import 'package:bharatwork/presentation/screens/on_boarding/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Added an enum to track the language choice clearly
@@ -87,16 +88,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
               // Updated onPressed: button is disabled if no language is selected
               onPressed: selectedLanguage == null
                   ? null // Disables the button
-                  : () {
-                      // Handle submit logic here
-                      print("Selected language: $selectedLanguage");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OnBoardingPage(),
-                        ),
-                      );
-                    },
+                  : () => context.push('/boarding'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.ButtonOrangeColor,
 

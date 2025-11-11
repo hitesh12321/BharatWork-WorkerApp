@@ -6,6 +6,7 @@ import 'package:bharatwork/presentation/screens/auth/login/login_otp_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
@@ -127,8 +128,10 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                       decoration: InputDecoration(
                         hintText: 'Enter Phone Number',
-                        hintStyle:
-                            const TextStyle(fontSize: 18, color: Colors.grey),
+                        hintStyle: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 20,
                           horizontal: 20,
@@ -178,21 +181,14 @@ class _LoginPageState extends State<LoginPage> {
                       // so it will always run.
                       // --- EDITED ---
                       _showSnackBar(context, 'OTP sent successfully!');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OtpPage(),
-                        ),
-                      );
+                      context.push('/login_otp_page');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.ButtonOrangeColor,
                       foregroundColor: Colors.white,
                       shadowColor: Colors.black,
                       elevation: 5,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 17,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -224,4 +220,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

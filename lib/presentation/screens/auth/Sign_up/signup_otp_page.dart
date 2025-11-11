@@ -3,6 +3,7 @@ import 'package:bharatwork/presentation/screens/home/home_page.dart';
 import 'package:bharatwork/presentation/screens/register/personal_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart'; // <-- 1. IMPORT PINPUT
 
@@ -206,13 +207,7 @@ class _SignupOtpPageState extends State<SignupOtpPage> {
                       } else {
                         // Case 3: Complete (Ready to verify)
                         print("Verifying OTP: $otp");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PersonalDetailsPage(),
-                          ),
-                        );
-
+                        context.push('/personal_details_page');
                         // TODO: Add your *actual* OTP verification logic here
                         // For example, call an API:
                         // bool isVerified = await authService.verifyOtp(otp);

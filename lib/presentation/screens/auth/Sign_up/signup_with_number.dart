@@ -5,6 +5,7 @@ import 'package:bharatwork/core/constants/app_colors.dart';
 import 'package:bharatwork/presentation/screens/auth/Sign_up/signup_otp_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignupWithNumber extends StatefulWidget {
@@ -186,12 +187,7 @@ class _SignupWithNumberState extends State<SignupWithNumber> {
                       // Per your request, ONLY this part is active for now,
                       // so it will always run.
                       _showSnackBar(context, 'OTP sent successfully!');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignupOtpPage(),
-                        ),
-                      );
+                      context.push('/signup_otp_page');
                       // --- END OF EDITS ---
                     },
                     style: ElevatedButton.styleFrom(

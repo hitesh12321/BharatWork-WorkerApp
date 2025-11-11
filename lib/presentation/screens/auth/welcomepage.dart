@@ -4,6 +4,7 @@ import 'package:bharatwork/presentation/screens/auth/login/login_with_number.dar
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Welcomepage extends StatefulWidget {
@@ -56,12 +57,7 @@ class _WelcomepageState extends State<Welcomepage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
+                      context.push('/login_page');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.ButtonOrangeColor,
@@ -86,12 +82,7 @@ class _WelcomepageState extends State<Welcomepage> {
                   const Gap(10),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignupWithNumber(),
-                        ),
-                      );
+                      context.push('/signup_page');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.ButtonOrangeColor,

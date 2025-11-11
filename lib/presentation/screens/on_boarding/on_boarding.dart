@@ -3,6 +3,7 @@ import 'package:bharatwork/models/onboard.dart';
 import 'package:bharatwork/presentation/screens/auth/welcomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
 
@@ -30,13 +31,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   // --- Helper method to navigate to the next page ---
   void _navigateToNextScreen() {
     // Use pushReplacement to prevent user from going back to onboarding
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        // Replace this with your actual Login or Home Page
-        builder: (context) => Welcomepage(),
-      ),
-    );
+    context.push('/welcome');
   }
 
   @override

@@ -2,17 +2,18 @@ import 'package:bharatwork/core/constants/app_colors.dart';
 import 'package:bharatwork/presentation/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart'; // <-- 1. IMPORT PINPUT
 
-class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+class LoginOtpPage extends StatefulWidget {
+  const LoginOtpPage({super.key});
 
   @override
-  State<OtpPage> createState() => _OtpPageState();
+  State<LoginOtpPage> createState() => _LoginOtpPageState();
 }
 
-class _OtpPageState extends State<OtpPage> {
+class _LoginOtpPageState extends State<LoginOtpPage> {
   // 2. Changed controller to be for OTP
   final TextEditingController _Login_otpController = TextEditingController();
   final FocusNode _Login_otpFocusNode = FocusNode();
@@ -205,12 +206,7 @@ class _OtpPageState extends State<OtpPage> {
                       } else {
                         // Case 3: Complete (Ready to verify)
                         print("Verifying OTP: $otp");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
+                        context.push('/home_page');
 
                         // TODO: Add your *actual* OTP verification logic here
                         // For example, call an API:

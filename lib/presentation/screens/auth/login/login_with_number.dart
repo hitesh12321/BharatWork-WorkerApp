@@ -1,21 +1,23 @@
 // ADD THIS IMPORT at the top of your file
+import 'package:bharatwork/features/auth/auth_contoller.dart';
 import 'package:flutter/services.dart';
 
 import 'package:bharatwork/core/constants/app_colors.dart';
 import 'package:bharatwork/presentation/screens/auth/login/login_otp_page.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState(); // Fix: Changed return type to ConsumerState
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   // Good practice to dispose controllers
   final TextEditingController _PhoneNumberController = TextEditingController();
 
@@ -59,6 +61,30 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height; // Use double
     final width = MediaQuery.of(context).size.width; // Use double
+    final authState = ref.watch(authControllerProvider); // Access ref here
+    ref.listen<AuthState>(authControllerProvider, (previous, next) {
+      final prev = previous; // Helper for readability
+
+      // --- THIS IS THE FIX ---
+      // Only show an error if we JUST finished loading and there's an error
+      if (prev != null &&
+          prev.isLoading &&
+          !next.isLoading &&
+          next.error != null) {
+        _showSnackBar(context, next.error!, isError: true);
+      }
+      // --- END OF FIX ---
+
+      // On success (code sent), navigate to OTP page
+      // Your original success logic was correct, as verificationId is the trigger
+      if (prev?.verificationId == null && next.verificationId != null) {
+        _showSnackBar(context, 'OTP sent successfully!');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const OtpPage()),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.DefaultBgColor,
@@ -127,8 +153,10 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                       decoration: InputDecoration(
                         hintText: 'Enter Phone Number',
-                        hintStyle:
-                            const TextStyle(fontSize: 18, color: Colors.grey),
+                        hintStyle: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 20,
                           horizontal: 20,
@@ -141,69 +169,86 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const Gap(10),
                   ElevatedButton(
-                    onPressed: () {
-                      // As requested, the validation logic is written but
-                      // commented out. Remove the /* and */ to enable it.
-                      /*
-                      final String phoneNumber =
-                          _PhoneNumberController.text.trim();
+                    onPressed: authState.isLoading
+                        ? null
+                        : () {
+                            // 1. Get the number from the text field for validation
+                            final String phoneNumber = _PhoneNumberController
+                                .text
+                                .trim();
 
-                      if (phoneNumber.isEmpty) {
-                        // --- EDITED ---
-                        _showSnackBar(context, 'Please enter a phone number.',
-                            isError: true);
-                      } else if (phoneNumber.length != 10) {
-                        // --- EDITED ---
-                        _showSnackBar(
-                            context, 'Please enter a 10-digit phone number.',
-                            isError: true);
-                      } else {
-                        // This is the success case
-                        // (Here you would add your OTP sending logic)
+                            // 2. Run your validation logic
+                            if (phoneNumber.isEmpty) {
+                              _showSnackBar(
+                                context,
+                                'Please enter a phone number.',
+                                isError: true,
+                              );
+                            } else if (phoneNumber.length != 10) {
+                              _showSnackBar(
+                                context,
+                                'Please enter a 10-digit phone number.',
+                                isError: true,
+                              );
+                            } else {
+                              // 3. VALIDATION PASSED!
+                              // Now, ignore the number you just checked and
+                              // send the Firebase test number to bypass billing.
+                              print(
+                                "UI Validation Passed. Now sending Firebase test number...",
+                              );
 
-                        // --- EDITED ---
-                        _showSnackBar(context, 'OTP sent successfully!');
+                              final String testPhoneNumber = '+19193386615';
 
-                        // Navigate to OTP page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OtpPage(),
-                          ),
-                        );
-                      }
-                      */
+                              // Call your AuthController to send the TEST OTP
+                              ref
+                                  .read(authControllerProvider.notifier)
+                                  .sendOtp(testPhoneNumber);
+                            }
 
-                      // Per your request, ONLY this part is active for now,
-                      // so it will always run.
-                      // --- EDITED ---
-                      _showSnackBar(context, 'OTP sent successfully!');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OtpPage(),
-                        ),
-                      );
-                    },
+                            // if (phoneNumber.isEmpty) {
+                            //   _showSnackBar(
+                            //     context,
+                            //     'Please enter a phone number.',
+                            //     isError: true,
+                            //   );
+                            // } else if (phoneNumber.length != 10) {
+                            //   _showSnackBar(
+                            //     context,
+                            //     'Please enter a 10-digit phone number.',
+                            //     isError: true,
+                            //   );
+                            // } else {
+                            //   // This is the success case
+                            //   // Add country code for Firebase
+                            //   final String fullPhoneNumber =
+                            //       '+91' + phoneNumber;
+
+                            //   // Call your AuthController to send the OTP
+                            //   ref
+                            //       .read(authControllerProvider.notifier)
+                            //       .sendOtp(fullPhoneNumber);
+                            // }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.ButtonOrangeColor,
                       foregroundColor: Colors.white,
                       shadowColor: Colors.black,
                       elevation: 5,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 17,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Text(
-                      "Get OTP",
-                      style: GoogleFonts.poppins(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: authState.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            "Get OTP",
+                            style: GoogleFonts.poppins(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -224,4 +269,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

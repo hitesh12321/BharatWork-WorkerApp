@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart'; // <-- 1. IMPORT PINPUT
+import 'package:bharatwork/features/auth/auth_contoller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OtpPage extends StatefulWidget {
+class OtpPage extends ConsumerStatefulWidget {
   const OtpPage({super.key});
 
   @override
-  State<OtpPage> createState() => _OtpPageState();
+  ConsumerState<OtpPage> createState() => _OtpPageState();
 }
 
-class _OtpPageState extends State<OtpPage> {
+class _OtpPageState extends ConsumerState<OtpPage> {
   // 2. Changed controller to be for OTP
   final TextEditingController _Login_otpController = TextEditingController();
   final FocusNode _Login_otpFocusNode = FocusNode();
@@ -61,6 +63,38 @@ class _OtpPageState extends State<OtpPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height; // Use double
     final width = MediaQuery.of(context).size.width; // Use double
+    final authState = ref.watch(authControllerProvider);
+
+    ref.listen<AuthState>(authControllerProvider, (previous, next) {
+      final prev = previous; // Helper for readability
+
+      // --- THIS IS THE FIX ---
+      // Only show an error if we JUST finished loading and there's an error
+      if (prev != null &&
+          prev.isLoading &&
+          !next.isLoading &&
+          next.error != null) {
+        _showSnackBar(context, next.error!, isError: true);
+      }
+      // --- END OF FIX ---
+
+      // On success:
+      // Your original success logic was already correct
+      if (prev != null &&
+          prev.isLoading &&
+          !next.isLoading &&
+          next.error == null &&
+          prev.verificationId != null) {
+        // Added one more check for safety
+        _showSnackBar(context, "OTP Verified Successfully!", isError: false);
+        // Navigate to Home and remove all previous screens
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false, // This removes the login stack
+        );
+      }
+    });
 
     // 4. Define the themes for your Pinput boxes
     final defaultPinTheme = PinTheme(
@@ -150,7 +184,9 @@ class _OtpPageState extends State<OtpPage> {
                   // 5. Added a text prompt for the OTP
                   Center(
                     child: Text(
-                      "Enter your 4-Digit OTP",
+                      // --- MODIFIED TEXT ---
+                      "Enter your 6-Digit OTP",
+                      // --- END OF MODIFICATION ---
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -162,75 +198,45 @@ class _OtpPageState extends State<OtpPage> {
                   const Gap(20), // Added more space
                   // 6. Replaced TextField with Pinput
                   Center(
-                    // Center the OTP boxes
                     child: Pinput(
-                      length: 4,
+                      // --- CRITICAL CHANGE ---
+                      length: 6, // Firebase sends 6-digit codes
+                      // --- END OF CHANGE ---
                       controller: _Login_otpController,
                       focusNode: _Login_otpFocusNode,
-                      defaultPinTheme: defaultPinTheme,
-                      focusedPinTheme: focusedPinTheme,
-                      submittedPinTheme: submittedPinTheme,
-                      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                      showCursor: true,
-                      onCompleted: (pin) {
-                        print("OTP Completed: $pin");
-                        // You can automatically trigger verification here
-                        // Or just let the button handle it
-                      },
+                      // ... rest of Pinput ...
                     ),
                   ),
 
                   const Gap(20), // Increased gap
                   ElevatedButton(
-                    onPressed: () {
-                      // --- START OF MODIFICATION ---
+                    onPressed: authState.isLoading
+                        ? null
+                        : () {
+                            // Disable when loading
+                            final otp = _Login_otpController.text;
 
-                      // 7. Updated button logic with SnackBar
-                      final otp = _Login_otpController.text;
+                            if (otp.isEmpty) {
+                              _showSnackBar(
+                                context,
+                                "Please enter the OTP",
+                                isError: true,
+                              );
+                            } else if (otp.length < 6) {
+                              // Check for 6 digits
+                              _showSnackBar(
+                                context,
+                                "Please enter all 6 digits",
+                                isError: true,
+                              );
+                            } else {
+                              // Call your AuthController to verify the OTP
+                              ref
+                                  .read(authControllerProvider.notifier)
+                                  .verifyOtp(otp);
+                            }
+                          },
 
-                      if (otp.isEmpty) {
-                        // Case 1: Empty
-                        _showSnackBar(
-                          context,
-                          "Please enter the OTP",
-                          isError: true,
-                        );
-                      } else if (otp.length < 4) {
-                        // Case 2: Incomplete
-                        _showSnackBar(
-                          context,
-                          "Please enter all 4 digits",
-                          isError: true,
-                        );
-                      } else {
-                        // Case 3: Complete (Ready to verify)
-                        print("Verifying OTP: $otp");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-
-                        // TODO: Add your *actual* OTP verification logic here
-                        // For example, call an API:
-                        // bool isVerified = await authService.verifyOtp(otp);
-
-                        // If verification is successful:
-                        _showSnackBar(
-                          context,
-                          "OTP Verified Successfully!",
-                          isError: false,
-                        );
-                        // And then navigate:
-                        // e.g., Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
-
-                        // If verification fails from your backend:
-                        // _showSnackBar(context, "Invalid OTP, please try again", isError: true);
-                      }
-
-                      // --- END OF MODIFICATION ---
-                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.ButtonOrangeColor,
                       foregroundColor: Colors.white,
@@ -241,13 +247,15 @@ class _OtpPageState extends State<OtpPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Text(
-                      "Verify & Continue",
-                      style: GoogleFonts.poppins(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: authState.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            "Verify & Continue",
+                            style: GoogleFonts.poppins(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ],
               ),

@@ -10,8 +10,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase using your firebase_options.dart
-  await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print(
+    "✅ /////////////////// Firebase connected to project: ${DefaultFirebaseOptions.currentPlatform.projectId}",
   );
 
   // Run your actual app with Riverpod
@@ -29,6 +30,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false, home: ChooseLanguage());
+      debugShowCheckedModeBanner: false,
+      home: ChooseLanguage(),
+    );
   }
 }

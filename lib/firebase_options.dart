@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBm7GoC8oUtI1McYI7UI0sti9cctc5t9-g',
-    appId: '1:977197347789:android:8545d555eb8c43141f8a84',
-    messagingSenderId: '977197347789',
-    projectId: 'bharatwork-2e997',
-    storageBucket: 'bharatwork-2e997.firebasestorage.app',
+    apiKey: 'AIzaSyDEwBMpoLVF7XFwpzYNhxdeJtn88UOB7JM',
+    appId: '1:630985636780:android:6f1fa9642272b693985809',
+    messagingSenderId: '630985636780',
+    projectId: 'workerapp-d4b34',
+    storageBucket: 'workerapp-d4b34.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBFvFn0--zmk96gkuKagwqDPK9HN9GY3I0',
-    appId: '1:977197347789:ios:af7ca6a129aae8171f8a84',
-    messagingSenderId: '977197347789',
-    projectId: 'bharatwork-2e997',
-    storageBucket: 'bharatwork-2e997.firebasestorage.app',
+    apiKey: 'AIzaSyDNQL6O1sCGEswziFAtIpMC7toWLoXvWYU',
+    appId: '1:630985636780:ios:0be502f052f8b792985809',
+    messagingSenderId: '630985636780',
+    projectId: 'workerapp-d4b34',
+    storageBucket: 'workerapp-d4b34.firebasestorage.app',
     iosBundleId: 'com.example.bharatwork',
   );
+
 }

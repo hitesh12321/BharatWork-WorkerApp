@@ -1,13 +1,27 @@
-import 'package:bharatwork/features/users/providers/user_providers.dart';
+import 'package:bharatwork/features/users/controller/user_controller.dart';
+import 'package:bharatwork/features/users/providers/user_providers.dart' hide userControllerProvider;
 import 'package:bharatwork/features/users/views/create_user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UsersScreen extends ConsumerWidget {
+class UsersScreen extends ConsumerStatefulWidget {
   const UsersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UsersScreen> createState() => _UsersScreenState();
+}
+
+class _UsersScreenState extends ConsumerState<UsersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(userControllerProvider.notifier).fetchAllUsers(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final users = ref.watch(userListProvider);
     final isLoading = ref.watch(userControllerProvider);
 
@@ -26,11 +40,11 @@ class UsersScreen extends ConsumerWidget {
           ),
         ],
       ),
-
       body: Stack(
         children: [
           if (users.isEmpty)
             const Center(child: Text("No users found")),
+
           if (users.isNotEmpty)
             ListView.builder(
               itemCount: users.length,

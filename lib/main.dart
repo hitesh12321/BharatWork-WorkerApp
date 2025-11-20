@@ -1,9 +1,12 @@
 // main.dart
 
+import 'dart:developer' as console;
+import 'package:bharatwork/features/users/views/users_list_view.dart';
 import 'package:bharatwork/firebase_options.dart';
-import 'package:bharatwork/presentation/screens/on_boarding/choose_language.dart';
+// import 'package:bharatwork/presentation/screens/on_boarding/choose_language.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
@@ -11,9 +14,11 @@ void main() async {
 
   // Initialize Firebase using your firebase_options.dart
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print(
+  console.log( level: 0,
     "✅ /////////////////// Firebase connected to project: ${DefaultFirebaseOptions.currentPlatform.projectId}",
   );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // CommonFunctions.lightStatusBarColor(AppColors.lightPink);
 
   // Run your actual app with Riverpod
   runApp(const ProviderScope(child: MyApp()));
@@ -31,7 +36,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ChooseLanguage(),
+      title: 'Bharat Work',
+      home: UsersScreen(),
     );
   }
 }

@@ -3,11 +3,28 @@ import 'package:bharatwork/features/users/views/create_user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UsersScreen extends ConsumerWidget {
+// 1. Change to ConsumerStatefulWidget
+class UsersScreen extends ConsumerStatefulWidget {
   const UsersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UsersScreen> createState() => _UsersScreenState();
+}
+
+class _UsersScreenState extends ConsumerState<UsersScreen> {
+  // 2. Use initState to fetch data when the app opens
+  @override
+  void initState() {
+    super.initState();
+    // We use Future.microtask to ensure the build is finished before using context
+    Future.microtask(() {
+      ref.read(userControllerProvider.notifier).fetchAllUsers(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 3. Watch the providers just like before
     final users = ref.watch(userListProvider);
     final isLoading = ref.watch(userControllerProvider);
 
@@ -19,9 +36,7 @@ class UsersScreen extends ConsumerWidget {
             icon: const Icon(Icons.add),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const CreateUserScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const CreateUserScreen()),
             ),
           ),
         ],
@@ -29,8 +44,9 @@ class UsersScreen extends ConsumerWidget {
 
       body: Stack(
         children: [
-          if (users.isEmpty)
+          if (users.isEmpty && !isLoading)
             const Center(child: Text("No users found")),
+
           if (users.isNotEmpty)
             ListView.builder(
               itemCount: users.length,
@@ -51,8 +67,7 @@ class UsersScreen extends ConsumerWidget {
               },
             ),
 
-          if (isLoading)
-            const Center(child: CircularProgressIndicator()),
+          if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

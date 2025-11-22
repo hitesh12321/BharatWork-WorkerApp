@@ -1,5 +1,6 @@
 import 'package:bharatwork/features/users/providers/user_providers.dart';
 import 'package:bharatwork/features/users/views/create_user_view.dart';
+import 'package:bharatwork/presentation/screens/MainPages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,16 +53,26 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
               itemCount: users.length,
               itemBuilder: (_, index) {
                 final user = users[index];
-                return ListTile(
-                  title: Text(user.name),
-                  subtitle: Text(user.email),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      ref
-                          .read(userControllerProvider.notifier)
-                          .deleteUser(context, user.id);
-                    },
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(userId: user.id),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: Text(user.name),
+                    subtitle: Text(user.email),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        ref
+                            .read(userControllerProvider.notifier)
+                            .deleteUser(context, user.id);
+                      },
+                    ),
                   ),
                 );
               },

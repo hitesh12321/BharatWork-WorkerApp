@@ -1,5 +1,6 @@
 import 'package:bharatwork/features/users/models/user_model.dart';
 import 'package:bharatwork/firebase/firebase_providers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod/riverpod.dart';
 import '../controller/user_controller.dart';
 import '../repository/user_repository.dart';
@@ -21,4 +22,13 @@ final userListProvider = StateProvider<List<AppUser>>((ref) => []);
 
 // holds selected user
 final activeUserProvider = StateProvider<AppUser?>((ref) => null);
+
+// active user (single)
+
+// last doc for pagination
+final lastUserDocProvider = StateProvider<DocumentSnapshot?>((ref) => null);
+
+// to track if more pages are available
+final hasMoreUsersProvider = StateProvider<bool>((ref) => true);
+
 

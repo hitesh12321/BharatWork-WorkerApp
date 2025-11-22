@@ -1,5 +1,5 @@
 import 'package:bharatwork/core/constants/app_colors.dart';
-import 'package:bharatwork/presentation/screens/home/home_page.dart';
+import 'package:bharatwork/presentation/screens/MainPages/home_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';

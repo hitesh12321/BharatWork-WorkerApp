@@ -1,8 +1,10 @@
 // main.dart
 
 import 'dart:developer' as console;
-import 'package:bharatwork/features/users/views/users_list_view.dart';
+
 import 'package:bharatwork/firebase_options.dart';
+import 'package:bharatwork/presentation/screens/MainPages/main_page.dart';
+
 // import 'package:bharatwork/presentation/screens/on_boarding/choose_language.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,8 @@ void main() async {
 
   // Initialize Firebase using your firebase_options.dart
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  console.log( level: 0,
+  console.log(
+    level: 0,
     "✅ /////////////////// Firebase connected to project: ${DefaultFirebaseOptions.currentPlatform.projectId}",
   );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -37,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bharat Work',
-      home: UsersScreen(),
+      home: MainPage(),
     );
   }
 }

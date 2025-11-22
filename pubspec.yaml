@@ -45,6 +45,9 @@ dependencies:
   cloud_firestore: 
   fpdart:
   connectivity_plus: 
+  iconly: ^1.0.0
+  iconsax: ^0.0.8
+
 
 dev_dependencies:
   flutter_test:
